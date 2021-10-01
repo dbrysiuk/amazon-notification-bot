@@ -29,7 +29,7 @@ class Bot:
             try:
                 # check if buy button is available with 10 sec page loading time
                 WebDriverWait(browser, 10).until(
-                    EC.presence_of_element_located((By.ID, 'buy-now-button'))
+                    EC.presence_of_element_located((By.ID, 'availability'))
                 )
 
                 print("Product is available")
