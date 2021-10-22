@@ -30,15 +30,17 @@ class Bot:
         while True:
             try:
                 # check if buy button is available with 10 sec page loading time
-                WebDriverWait(browser, 10).until(
+                availability_div = WebDriverWait(browser, 10).until(
                     EC.presence_of_element_located((By.ID, 'availability'))
                 )
 
-                print("Product is available")
-                # send email notification
-                Alert.email_alert(browser.title + " is available !!!", browser.current_url, self.email)
-                browser.quit()
-                break
+                if "auf lager" in availability_div.text.lower():
+                    print("Product is available")
+                    # send email notification
+                    Alert.email_alert(browser.title + " is available !!!", browser.current_url, self.email)
+                    browser.quit()
+                    break
+                browser.execute_script("location.reload(true);")
             except:
                 print("Product is not available")
                 # reload browser and try again
@@ -54,6 +56,8 @@ class Bot:
         browser = webdriver.Chrome(ChromeDriverManager().install(), options=options)
         browser.maximize_window()
         browser.get(self.url)
+
+        on_stock_text = "auf lager"
 
         try:
             # find search bar type the name of product and press enter
@@ -77,15 +81,18 @@ class Bot:
             while True:
                 try:
                     # check if buy button is available with 10 sec page loading time
-                    WebDriverWait(browser, 10).until(
+                    availability_div = WebDriverWait(browser, 10).until(
                         EC.presence_of_element_located((By.ID, 'availability'))
                     )
 
-                    print("Product is available")
-                    # send email notification
-                    Alert.email_alert(browser.title + " is available !!!", browser.current_url, self.email)
-                    browser.quit()
-                    break
+                    if on_stock_text in availability_div.text.lower():
+                        print("Product is available")
+                        # send email notification
+                        Alert.email_alert(browser.title + " is available !!!", browser.current_url, self.email)
+                        browser.quit()
+                        break
+                    else:
+                        browser.execute_script("location.reload(true);")
                 except:
                     print("Product is not available")
                     # reload browser and try again
